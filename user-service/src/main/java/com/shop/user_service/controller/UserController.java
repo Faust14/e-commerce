@@ -1,7 +1,7 @@
 package com.shop.user_service.controller;
 
 import com.shop.user_service.service.UserService;
-import com.shop.user_service.model.User;
+import com.shop.user_service.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

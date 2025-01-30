@@ -1,18 +1,14 @@
-package com.shop.user_service.model;
+package com.shop.user_service.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.util.Collections;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "users")
 public class User {
     @Id
@@ -20,10 +16,13 @@ public class User {
     private Long id;
 
     @Column(nullable = false)
-    private String firstName;
+    private String firstname;
 
     @Column(nullable = false)
-    private String lastName;
+    private String lastname;
+
+    @Column(nullable = false)
+    private String username;
 
     @Column(unique = true, nullable = false)
     private String email;
@@ -33,9 +32,5 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private Role role;
-//
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + this.role.name()));
-//    }
 }
 

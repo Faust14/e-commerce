@@ -1,12 +1,9 @@
 package com.shop.user_service.service;
 
-import com.shop.user_service.model.Role;
-import com.shop.user_service.model.User;
+import com.shop.user_service.domain.Role;
+import com.shop.user_service.domain.User;
 import com.shop.user_service.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +11,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserService implements UserDetailsService {
+public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -32,10 +29,4 @@ public class UserService implements UserDetailsService {
         return userRepository.findById(id);
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
-        return new SecurityUser(user.getEmail(), user.getPassword(), user.getAuthorities());
-    }
 }
