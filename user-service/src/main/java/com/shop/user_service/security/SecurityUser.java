@@ -1,6 +1,8 @@
 package com.shop.user_service.security;
 
 import com.shop.user_service.domain.User;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,21 +11,17 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+@Getter
+@RequiredArgsConstructor
 public class SecurityUser implements UserDetails {
     private final String email;
     private final String password;
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public SecurityUser(String email, String password, Collection<? extends GrantedAuthority> authorities) {
-        this.email = email;
-        this.password = password;
-        this.authorities = authorities;
-    }
-
     public SecurityUser(User user) {
         this.email = user.getEmail();
         this.password = user.getPassword();
-        this.authorities = List.of(new SimpleGrantedAuthority(user.getRole().name()));
+        this.authorities = List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
     }
 
     public static SecurityUser fromUser(User user) {

@@ -12,6 +12,7 @@ import com.shop.user_service.repository.UserRepository;
 import com.shop.user_service.security.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -23,6 +24,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final JwtUtil jwtUtil;
+    private final PasswordEncoder passwordEncoder;
 
     public LoginResponse doLogin(LoginRequest loginRequest) {
         Optional<User> optionalUser = userRepository.findByUsernameAndPassword(loginRequest.username(), loginRequest.password());
@@ -39,6 +41,7 @@ public class AuthService {
     public void doRegister(CreateUserRequest userRequest) {
         User user = userMapper.toUser(userRequest);
         user.setRole(Role.USER);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.saveAndFlush(user);
     }
 

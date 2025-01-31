@@ -4,12 +4,13 @@ import com.shop.user_service.dto.request.CreateUserRequest;
 import com.shop.user_service.dto.request.LoginRequest;
 import com.shop.user_service.dto.response.LoginResponse;
 import com.shop.user_service.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class AuthController {
@@ -27,6 +28,7 @@ public class AuthController {
         return ResponseEntity.status(201).build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update")
     public ResponseEntity<Void> updateUserRole(@RequestParam Long userId, @RequestParam String role) {
         authService.updateRole(userId, role);

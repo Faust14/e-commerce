@@ -3,7 +3,6 @@ package com.shop.user_service.controller;
 import com.shop.user_service.dto.response.ErrorResponse;
 import com.shop.user_service.exception.LoginException;
 import com.shop.user_service.exception.NotFoundException;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
