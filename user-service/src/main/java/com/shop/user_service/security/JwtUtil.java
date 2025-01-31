@@ -22,36 +22,43 @@ import java.util.function.Function;
         }
 
         public String generateToken(User user) {
+            Date expirationDate = new Date(System.currentTimeMillis() + EXPIRATION_TIME);
             return Jwts.builder()
                     .setSubject(user.getUsername())
                     .setIssuedAt(new Date())
-                    .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                    .setClaims(generateClaims(user))
+                    .setExpiration(expirationDate)
+                    .setClaims(generateClaims(user,expirationDate))
                     .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                     .compact();
         }
 
-        public boolean validateToken(String token, String email) {
-            return (email.equals(extractEmail(token)) && !isTokenExpired(token));
-        }
-
         public String extractEmail(String token) {
-            return extractClaim(token, Claims::getSubject);
+            return extractClaim(token, this::extractEmail);
         }
 
         public Date extractExpiration(String token) {
             return extractClaim(token, Claims::getExpiration);
         }
 
+        public boolean validateToken(String token, String email) {
+            return (email.equals(extractEmail(token)) && !isTokenExpired(token));
+        }
+
+        private String extractEmail(Claims claims) {
+            return claims.get("email", String.class);
+        }
+
         public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
             final Claims claims = extractAllClaims(token);
             return claimsResolver.apply(claims);
         }
-        private Map<String, Object> generateClaims(User user){
+
+        private Map<String, Object> generateClaims(User user, Date expDate) {
             return Map.of(
                     "username", user.getUsername(),
                     "email", user.getEmail(),
-                    "role", user.getRole()
+                    "role", user.getRole(),
+                    "exp", expDate
             );
         }
         private Claims extractAllClaims(String token) {
