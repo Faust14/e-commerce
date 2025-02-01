@@ -3,13 +3,16 @@ package com.shop.product_service.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Builder
-@Table(name = "products")
-public class Product {
+@Table(name = "categories")
+public class Category {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,10 +21,6 @@ public class Product {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private String description;
-
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Product> products;
 }

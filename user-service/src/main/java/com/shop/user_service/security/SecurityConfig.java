@@ -30,8 +30,14 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .headers(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/login", "/api/register","/h2-console/**").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers(
+                                "/api/auth/login",
+                                "/api/auth/register",
+                                "/h2-console/**",
+                                "/api/auth/validate")
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())

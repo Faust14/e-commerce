@@ -1,7 +1,9 @@
 package com.shop.product_service.service;
 
+import com.shop.product_service.domain.Category;
 import com.shop.product_service.domain.Product;
 import com.shop.product_service.dto.request.CreateProductRequest;
+import com.shop.product_service.dto.response.ProductResponse;
 import com.shop.product_service.exception.NotFoundException;
 import com.shop.product_service.mapper.ProductMapper;
 import com.shop.product_service.repository.ProductRepository;
@@ -15,33 +17,44 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class ProductService {
+
+    private final CategoryService categoryService;
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
 
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public List<ProductResponse> getAllProducts() {
+        return productRepository.findAll().stream()
+                .map(productMapper::toProductResponse)
+                .toList();
     }
 
-    public Optional<Product> getProductById(Long id) {
-        return productRepository.findById(id);
+    public ProductResponse getProductById(Long id) {
+        Optional<Product> productOptional = productRepository.findById(id);
+        Product product = productOptional.orElseThrow(() -> new NotFoundException("Product not found"));
+        return productMapper.toProductResponse(product);
     }
 
     @Transactional
-    public Product createProduct(CreateProductRequest createProductRequest) {
+    public ProductResponse createProduct(CreateProductRequest createProductRequest) {
         Product product = productMapper.toProduct(createProductRequest);
-        return productRepository.saveAndFlush(product);
+        Category category = categoryService.getCategoryById(createProductRequest.category());
+        product.setCategory(category);
+
+        return productMapper.toProductResponse(productRepository.saveAndFlush(product));
     }
 
     @Transactional
-    public Product updateProduct(Product product) {
-        Product existingProduct = productRepository.findById(product.getId()).orElseThrow(()->new NotFoundException("Product not found"));
+    public ProductResponse updateProduct(Product product) {
+        Product existingProduct = productRepository.findById(product.getId()).orElseThrow(() -> new NotFoundException("Product not found"));
         existingProduct.setName(product.getName());
         existingProduct.setDescription(product.getDescription());
         existingProduct.setCategory(product.getCategory());
 
-        return productRepository.saveAndFlush(existingProduct);
+        return productMapper.toProductResponse(productRepository.saveAndFlush(existingProduct));
     }
+
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
     }
+
 }

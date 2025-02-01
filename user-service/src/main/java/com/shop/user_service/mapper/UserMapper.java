@@ -6,8 +6,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserMapper {
+
     public User toUser(CreateUserRequest createUserRequest) {
-      return User.builder()
+        return User.builder()
                 .email(createUserRequest.email())
                 .firstname(createUserRequest.firstname())
                 .lastname(createUserRequest.lastname())
@@ -15,4 +16,5 @@ public class UserMapper {
                 .password(createUserRequest.password())
                 .build();
     }
+
 }

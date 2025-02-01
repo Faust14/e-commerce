@@ -6,7 +6,6 @@ import com.shop.user_service.dto.request.LoginRequest;
 import com.shop.user_service.exception.LoginException;
 import com.shop.user_service.dto.response.LoginResponse;
 import com.shop.user_service.domain.User;
-import com.shop.user_service.exception.NotFoundException;
 import com.shop.user_service.mapper.UserMapper;
 import com.shop.user_service.repository.UserRepository;
 import com.shop.user_service.security.JwtUtil;
@@ -29,7 +28,7 @@ public class AuthService {
     public LoginResponse doLogin(LoginRequest loginRequest) {
         Optional<User> optionalUser = userRepository.findByUsernameAndPassword(loginRequest.username(), loginRequest.password());
 
-        if(optionalUser.isEmpty()) {
+        if (optionalUser.isEmpty()) {
             throw new LoginException("Invalid credentials");
         }
 
@@ -45,10 +44,4 @@ public class AuthService {
         userRepository.saveAndFlush(user);
     }
 
-    @Transactional
-    public void updateRole(Long userId, String role) {
-        User user = userRepository.findById(userId).orElseThrow(()->new NotFoundException("User not found"));
-        user.setRole(Role.getRoleByAlias(role));
-        userRepository.saveAndFlush(user);
-    }
 }

@@ -3,8 +3,7 @@ package com.shop.user_service.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
