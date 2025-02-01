@@ -3,11 +3,12 @@ package com.shop.product_service.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Builder
 @Table(name = "products")
 public class Product {
     @Id
@@ -21,8 +22,5 @@ public class Product {
     private String description;
 
     @Column(nullable = false)
-    private double price;
-
-    @Column(nullable = false)
-    private int quantity;
+    private String category;
 }
