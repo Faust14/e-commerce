@@ -13,14 +13,19 @@ public class ProductMapper {
         return Product.builder()
                 .name(createProductRequest.name())
                 .description(createProductRequest.description())
+                .quantity(createProductRequest.quantity())
+                .price(createProductRequest.price())
                 .build();
     }
 
 
     public ProductResponse toProductResponse(Product product) {
         return new ProductResponse(
+                product.getId(),
                 product.getName(),
                 product.getDescription(),
+                product.getQuantity(),
+                product.getPrice(),
                 product.getCategory().getName()
         );
     }

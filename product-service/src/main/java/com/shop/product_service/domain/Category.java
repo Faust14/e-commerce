@@ -10,7 +10,8 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Builder
-@Table(name = "categories")
+@Table(name = "categories",
+        uniqueConstraints = @UniqueConstraint(columnNames = "name"))
 public class Category {
 
 

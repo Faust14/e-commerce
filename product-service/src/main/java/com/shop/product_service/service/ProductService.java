@@ -10,6 +10,7 @@ import com.shop.product_service.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
 import java.util.Optional;
@@ -48,6 +49,8 @@ public class ProductService {
         Product existingProduct = productRepository.findById(product.getId()).orElseThrow(() -> new NotFoundException("Product not found"));
         existingProduct.setName(product.getName());
         existingProduct.setDescription(product.getDescription());
+        existingProduct.setQuantity(product.getQuantity());
+        existingProduct.setPrice(product.getPrice());
         existingProduct.setCategory(product.getCategory());
 
         return productMapper.toProductResponse(productRepository.saveAndFlush(existingProduct));

@@ -3,14 +3,17 @@ package com.shop.product_service.service;
 import com.shop.product_service.domain.Category;
 import com.shop.product_service.dto.request.CreateCategoryRequest;
 import com.shop.product_service.dto.response.CategoryResponse;
+import com.shop.product_service.exception.AlreadyExistException;
 import com.shop.product_service.exception.NotFoundException;
 import com.shop.product_service.mapper.CategoryMapper;
 import com.shop.product_service.repository.CategoryRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -35,14 +38,20 @@ public class CategoryService {
 
     @Transactional
     public CategoryResponse createCategory(CreateCategoryRequest createCategoryRequest) {
+        Optional<Category> existingCategory = categoryRepository.findByName(createCategoryRequest.name());
+
+        existingCategory.ifPresent(category -> {
+            throw new AlreadyExistException("Category with name '" + createCategoryRequest.name() + "' already exists.");
+        });
+
         Category category = categoryMapper.toCategory(createCategoryRequest);
         return categoryMapper.toCategoryResponse(categoryRepository.saveAndFlush(category));
     }
 
     @Transactional
-    public CategoryResponse updateCategory(Category product) {
-        Category existingCategory = categoryRepository.findById(product.getId()).orElseThrow(() -> new NotFoundException("Category not found"));
-        existingCategory.setName(product.getName());
+    public CategoryResponse updateCategory(Category category) {
+        Category existingCategory = categoryRepository.findById(category.getId()).orElseThrow(() -> new NotFoundException("Category not found"));
+        existingCategory.setName(category.getName());
 
         return categoryMapper.toCategoryResponse(categoryRepository.saveAndFlush(existingCategory));
     }

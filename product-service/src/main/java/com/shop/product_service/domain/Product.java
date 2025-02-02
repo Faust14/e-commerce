@@ -21,6 +21,12 @@ public class Product {
     @Column(nullable = false)
     private String description;
 
+    @Column(nullable = false)
+    private Double price;
+
+    @Column(nullable = false)
+    private int quantity;
+
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;

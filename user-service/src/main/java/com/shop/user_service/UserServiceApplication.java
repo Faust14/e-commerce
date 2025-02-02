@@ -7,12 +7,16 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 public class UserServiceApplication {
 
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	public static void main(String[] args) {
 		SpringApplication.run(UserServiceApplication.class, args);
@@ -25,7 +29,7 @@ public class UserServiceApplication {
 				.lastname("Stojkovic")
 				.firstname("Dimitrije")
 				.username("ADMIN")
-				.password("21232f297a57a5a743894a0e4a801fc3")
+				.password(passwordEncoder.encode("123456"))
 				.email("dimitrije.stojkovic@gmail.com")
 				.role(Role.ADMIN)
 				.build();

@@ -8,6 +8,10 @@ public record CreateProductRequest(
         @NotNull
         String description,
         @NotNull
+        int quantity,
+        @NotNull
+        Double price,
+        @NotNull
         Long category
 ) {
 }
