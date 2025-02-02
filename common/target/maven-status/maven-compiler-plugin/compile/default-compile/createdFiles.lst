@@ -1,5 +1,5 @@
 com\shop\common\config\SecurityConfig.class
 com\shop\common\config\AuthClientConfig.class
 com\shop\common\auth\JwtAuthFilter.class
+com\shop\common\feign\FeignClientInterceptorConfig.class
 com\shop\common\auth\TokenUtil.class
-com\shop\common\feign\FeignClientInterceptor.class

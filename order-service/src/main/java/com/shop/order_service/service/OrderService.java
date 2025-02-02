@@ -13,18 +13,26 @@ import com.shop.order_service.repository.OrderRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
-public class OrderService {
+public class OrderService{
 
     private final OrderRepository orderRepository;
     private final ProductClient productClient;
     private final UserClient userClient;
     private final OrderMapper orderMapper;
+
+    @Autowired
+    public OrderService(OrderRepository orderRepository, ProductClient productClient, UserClient userClient, OrderMapper orderMapper) {
+        this.orderRepository = orderRepository;
+        this.productClient = productClient;
+        this.userClient = userClient;
+        this.orderMapper = orderMapper;
+    }
 
     public List<OrderResponse> getAllOrders() {
         List<Order> orders = orderRepository.findAll();

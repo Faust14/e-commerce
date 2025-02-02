@@ -10,6 +10,7 @@ import com.shop.order_service.feign.UserClient;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,7 +24,7 @@ public class OrderMapper {
     public Order toOrder(CreateOrderRequest createOrderRequest) {
         return  Order.builder()
                 .userId(createOrderRequest.userId())
-                .orderDate(createOrderRequest.localDateTime())
+                .orderDate(LocalDateTime.now())
                 .productIds(createOrderRequest.productIds())
                 .build();
     }

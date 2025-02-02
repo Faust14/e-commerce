@@ -9,8 +9,6 @@ public record CreateOrderRequest(
         @NotNull
         Long userId,
         @NotNull
-        List<Long> productIds,
-        @NotNull
-        LocalDateTime localDateTime
+        List<Long> productIds
 ) {
 }

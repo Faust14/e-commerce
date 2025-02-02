@@ -46,7 +46,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String username = tokenUtil.extractUsername(choppedToken);
         SimpleGrantedAuthority authorities = tokenUtil.extractRoles(choppedToken);
 
-        var authentication = new UsernamePasswordAuthenticationToken(username, null, List.of(authorities));
+        var authentication = new UsernamePasswordAuthenticationToken(username, choppedToken, List.of(authorities));
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
