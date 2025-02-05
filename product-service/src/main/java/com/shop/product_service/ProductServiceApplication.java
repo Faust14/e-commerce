@@ -48,7 +48,7 @@ public class ProductServiceApplication {
 				.name("Laptop Lenovo")
 				.description("High-performance laptop with 16GB RAM and SSD storage.")
 				.price(1200.00)
-				.quantity(10)
+				.quantity(1)
 				.category(category)
 				.build();
 
