@@ -1,5 +1,4 @@
-package com.shop.product_service.dto.response;
-
+package com.shop.order_service.dto.response;
 
 public record CategoryResponse(
         Long id,

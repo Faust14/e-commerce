@@ -11,7 +11,6 @@ import com.shop.user_service.repository.UserRepository;
 import com.shop.user_service.security.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -35,12 +34,13 @@ public class AuthService {
 
         User user = optionalUser.get();
 
-        if (!BCrypt.checkpw(loginRequest.password(), user.getPassword())) {
+        if (!passwordEncoder.matches(loginRequest.password(), user.getPassword())) {
             throw new LoginException("Invalid credentials");
         }
 
-        String jwtToken = jwtUtil.generateToken(optionalUser.get());
-        return new LoginResponse(jwtToken);
+        String jwtToken = jwtUtil.generateToken(user);
+
+        return new LoginResponse(jwtToken, user);
     }
 
     @Transactional

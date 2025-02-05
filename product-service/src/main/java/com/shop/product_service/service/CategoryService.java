@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,17 +23,23 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
 
-    public List<CategoryResponse> getAllCategories() {
-        return categoryRepository.findAll().stream()
+    public List<CategoryResponse> getAllCategories(String search) {
+        List<Category> categories;
+        if (search == null || search.trim().isEmpty()) {
+            categories = categoryRepository.findAll();
+        } else {
+            categories = categoryRepository.findByNameContainingIgnoreCase(search.toLowerCase());
+        }
+        return categories.stream()
                 .map(categoryMapper::toCategoryResponse)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public CategoryResponse getCategoryResponseById(Long id) {
         return categoryMapper.toCategoryResponse(getCategoryById(id));
     }
 
-    Category getCategoryById(Long id) {
+    public Category getCategoryById(Long id) {
         return categoryRepository.findById(id).orElseThrow(() -> new NotFoundException("Category not found"));
     }
 
@@ -58,6 +65,9 @@ public class CategoryService {
 
     @Transactional
     public void deleteCategory(Long id) {
+        if (!categoryRepository.existsById(id)) {
+            throw new NotFoundException("Category not found");
+        }
         categoryRepository.deleteById(id);
     }
 

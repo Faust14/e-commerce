@@ -2,7 +2,6 @@ package com.shop.common.config;
 
 import com.shop.common.auth.JwtAuthFilter;
 import com.shop.common.auth.TokenUtil;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;

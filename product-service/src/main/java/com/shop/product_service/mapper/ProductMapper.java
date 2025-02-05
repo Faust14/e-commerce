@@ -18,7 +18,6 @@ public class ProductMapper {
                 .build();
     }
 
-
     public ProductResponse toProductResponse(Product product) {
         return new ProductResponse(
                 product.getId(),
@@ -26,7 +25,7 @@ public class ProductMapper {
                 product.getDescription(),
                 product.getQuantity(),
                 product.getPrice(),
-                product.getCategory().getName()
+                product.getCategory()
         );
     }
 }

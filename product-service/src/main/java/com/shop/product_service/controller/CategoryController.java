@@ -22,8 +22,8 @@ public class CategoryController {
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping
-    public ResponseEntity<List<CategoryResponse>> getAllProducts() {
-        return ResponseEntity.ok(categoryService.getAllCategories());
+    public ResponseEntity<List<CategoryResponse>> getAllProducts(@RequestParam(value = "search", required = false) String search) {
+        return ResponseEntity.ok(categoryService.getAllCategories(search));
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")

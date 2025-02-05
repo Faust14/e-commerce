@@ -5,12 +5,14 @@ import com.shop.product_service.dto.request.CreateProductRequest;
 import com.shop.product_service.dto.response.ProductResponse;
 import com.shop.product_service.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/api/products")
@@ -20,8 +22,8 @@ public class ProductController {
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping
-    public ResponseEntity<List<ProductResponse>> getAllProducts() {
-        return ResponseEntity.ok(productService.getAllProducts());
+    public ResponseEntity<List<ProductResponse>> getAllProducts(@RequestParam(value = "search", required = false, defaultValue = "") String search) {
+        return ResponseEntity.ok(productService.getAllProducts(search.trim()));
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
@@ -39,10 +41,18 @@ public class ProductController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping
+    @PutMapping("/update")
     public ResponseEntity<ProductResponse> updateProduct(@RequestBody Product product) {
         ProductResponse response = productService.updateProduct(product);
         return ResponseEntity.ok(response);
+    }
+
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @PutMapping("/{productId}/reduceQuantity")
+    public ResponseEntity<Void> reduceProductQuantity(@PathVariable Long productId, @RequestParam int quantity) {
+        log.info("Reducing quantity for productId: {}, quantity: {}", productId, quantity);
+        productService.reduceQuantity(productId, quantity);
+        return ResponseEntity.ok().build();
     }
 
     @PreAuthorize("hasRole('ADMIN')")

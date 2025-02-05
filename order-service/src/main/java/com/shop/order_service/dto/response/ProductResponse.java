@@ -6,8 +6,9 @@ public record ProductResponse (
         Long id,
         String name,
         String description,
-        String category,
+        CategoryResponse category,
         LocalDateTime localDateTime,
-        Double price
+        Double price,
+        int quantity
 ) {
 }

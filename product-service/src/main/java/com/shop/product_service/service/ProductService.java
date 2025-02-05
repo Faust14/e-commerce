@@ -10,10 +10,10 @@ import com.shop.product_service.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,10 +23,16 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
 
-    public List<ProductResponse> getAllProducts() {
-        return productRepository.findAll().stream()
+    public List<ProductResponse> getAllProducts(String search) {
+        List<Product> products;
+        if (search == null || search.trim().isEmpty()) {
+            products = productRepository.findAll();
+        } else {
+            products = productRepository.findByNameContainingIgnoreCase(search);
+        }
+        return products.stream()
                 .map(productMapper::toProductResponse)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public ProductResponse getProductById(Long id) {
@@ -45,18 +51,35 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductResponse updateProduct(Product product) {
-        Product existingProduct = productRepository.findById(product.getId()).orElseThrow(() -> new NotFoundException("Product not found"));
-        existingProduct.setName(product.getName());
-        existingProduct.setDescription(product.getDescription());
-        existingProduct.setQuantity(product.getQuantity());
-        existingProduct.setPrice(product.getPrice());
-        existingProduct.setCategory(product.getCategory());
+    public ProductResponse updateProduct(Product newProduct) {
+        Product product = productRepository.findById(newProduct.getId()).orElseThrow(() -> new NotFoundException("Product not found"));
+        product.setName(newProduct.getName());
+        product.setDescription(newProduct.getDescription());
+        product.setQuantity(newProduct.getQuantity());
+        product.setPrice(newProduct.getPrice());
+        Category category = categoryService.getCategoryById(newProduct.getId());
+        product.setCategory(category);
+        productRepository.saveAndFlush(product);
+        return productMapper.toProductResponse(product);
+    }
 
-        return productMapper.toProductResponse(productRepository.saveAndFlush(existingProduct));
+    @Transactional
+    public void reduceQuantity(Long productId, int quantity) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        if (product.getQuantity() < quantity) {
+            throw new IllegalStateException("Not enough stock for product: " + product.getName());
+        }
+
+        product.setQuantity(product.getQuantity() - quantity);
+        productRepository.save(product);
     }
 
     public void deleteProduct(Long id) {
+        if (!productRepository.existsById(id)) {
+            throw new NotFoundException("Product not found");
+        }
         productRepository.deleteById(id);
     }
 

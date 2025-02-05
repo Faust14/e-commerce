@@ -4,22 +4,22 @@ import com.shop.order_service.domain.Order;
 import com.shop.order_service.dto.request.CreateOrderRequest;
 import com.shop.order_service.dto.response.OrderResponse;
 import com.shop.order_service.dto.response.ProductResponse;
-import com.shop.order_service.dto.response.UserResponse;
 import com.shop.order_service.exception.NotFoundException;
+import com.shop.order_service.exception.PermissionException;
 import com.shop.order_service.feign.ProductClient;
 import com.shop.order_service.feign.UserClient;
 import com.shop.order_service.mapper.OrderMapper;
 import com.shop.order_service.repository.OrderRepository;
 
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class OrderService{
+public class OrderService {
 
     private final OrderRepository orderRepository;
     private final ProductClient productClient;
@@ -49,19 +49,31 @@ public class OrderService{
                 .map(orderMapper::toOrderResponse)
                 .collect(Collectors.toList());
     }
+
     @Transactional
     public OrderResponse createOrder(CreateOrderRequest createOrderRequest) {
-
         var user = userClient.getUserById(createOrderRequest.userId());
+
         List<ProductResponse> products = createOrderRequest.productIds().stream()
                 .map(productClient::getProductById)
                 .toList();
-        Order order = orderMapper.toOrder(createOrderRequest);
 
+        for (ProductResponse product : products) {
+            if (product.quantity() <= 0) {
+                throw new IllegalStateException("Product " + product.name() + " is out of stock.");
+            }
+        }
+
+        Order order = orderMapper.toOrder(createOrderRequest);
         orderRepository.saveAndFlush(order);
 
-        return new OrderResponse(order.getId(),user, products, order.getOrderDate());
+        createOrderRequest.productIds().forEach(productId -> {
+            productClient.reduceProductQuantity(productId, 1);
+        });
+
+        return new OrderResponse(order.getId(), user, products, order.getOrderDate());
     }
+
 
     @Transactional
     public OrderResponse updateOrder(Order order) {
@@ -95,8 +107,8 @@ public class OrderService{
 
         boolean isAdmin = user.role().equalsIgnoreCase("ADMIN");
 
-        if (!isAdmin && !existingOrder.getUserId().equals(user.id())) {
-            return;
+        if (!isAdmin && !existingOrder.getUserId().equals(userId)) {
+            throw new PermissionException("Permission denied. You are not authorized to perform this operation.");
         }
 
         orderRepository.delete(existingOrder);

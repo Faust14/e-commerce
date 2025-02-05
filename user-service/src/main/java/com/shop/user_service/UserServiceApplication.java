@@ -25,14 +25,26 @@ public class UserServiceApplication {
 
 	@PostConstruct
 	public void createsAdmin() {
-		User user = User.builder()
+
+		User admin = User.builder()
 				.lastname("Stojkovic")
 				.firstname("Dimitrije")
-				.username("ADMIN")
+				.username("dima")
 				.password(passwordEncoder.encode("123456"))
 				.email("dimitrije.stojkovic@gmail.com")
 				.role(Role.ADMIN)
 				.build();
+
+		User user = User.builder()
+				.lastname("Milos")
+				.firstname("Milosevic")
+				.username("USER")
+				.password(passwordEncoder.encode("123456"))
+				.email("milos.milosevic@gmail.com")
+				.role(Role.USER)
+				.build();
+
+		userRepository.saveAndFlush(admin);
 		userRepository.saveAndFlush(user);
 	}
 }

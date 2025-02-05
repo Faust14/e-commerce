@@ -1,6 +1,5 @@
 package com.shop.order_service.controller;
 
-import com.shop.order_service.domain.Order;
 import com.shop.order_service.dto.request.CreateOrderRequest;
 import com.shop.order_service.dto.response.OrderResponse;
 import com.shop.order_service.service.OrderService;
@@ -36,13 +35,8 @@ public class OrderController {
         return ResponseEntity.ok(orders);
     }
 
-    @PutMapping("/{orderId}")
-    public ResponseEntity<OrderResponse> updateOrder(@RequestBody Order updateOrderRequest) {
-        OrderResponse updatedOrder = orderService.updateOrder(updateOrderRequest);
-        return ResponseEntity.ok(updatedOrder);
-    }
-
-    @DeleteMapping("/{orderId}")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @DeleteMapping("/delete/{orderId}/{userId}")
     public ResponseEntity<Void> deleteOrder(@PathVariable Long orderId, @PathVariable Long userId) {
         orderService.deleteOrder(orderId, userId);
         return ResponseEntity.noContent().build();
