@@ -18,7 +18,7 @@ public class CategoryExceptionAdvice {
     @ExceptionHandler(AlreadyExistException.class)
     public ResponseEntity<ErrorResponse> invalidRequestBody(AlreadyExistException alreadyExistException) {
         log.warn("Category exist: {}", alreadyExistException.getMessage());
-        ErrorResponse apiError = new ErrorResponse(HttpStatus.CONFLICT.name(), HttpStatus.CONFLICT.value(),alreadyExistException.getMessage());
+        ErrorResponse apiError = new ErrorResponse(HttpStatus.CONFLICT.name(), HttpStatus.CONFLICT.value(), alreadyExistException.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(apiError);
     }
 }

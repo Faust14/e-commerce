@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
         OrderController.class,
 })
 @Slf4j
-public class UserExceptionAdvice {
+public class OrderExceptionAdvice {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorResponse> notFound(NotFoundException notFoundException) {

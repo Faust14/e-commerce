@@ -31,7 +31,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/update")
+    @PutMapping
     public ResponseEntity<Void> updateUser(@RequestBody User user) {
         userService.updateUser(user);
         return ResponseEntity.status(201).build();
@@ -45,7 +45,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();

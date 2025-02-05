@@ -33,7 +33,7 @@ public class CategoryController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<CategoryResponse> createProduct(@RequestBody CreateCategoryRequest createProductRequest) {
         CategoryResponse response = categoryService.createCategory(createProductRequest);
         return ResponseEntity.ok(response);

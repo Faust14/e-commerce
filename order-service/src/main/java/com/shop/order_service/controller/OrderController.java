@@ -16,6 +16,7 @@ import java.util.List;
 public class OrderController {
     private final OrderService orderService;
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @PostMapping
     public ResponseEntity<OrderResponse> createOrder(@RequestBody CreateOrderRequest createOrderRequest) {
         OrderResponse orderResponse = orderService.createOrder(createOrderRequest);
@@ -29,6 +30,7 @@ public class OrderController {
         return ResponseEntity.ok(orders);
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<OrderResponse>> getOrdersByUserId(@PathVariable Long userId) {
         List<OrderResponse> orders = orderService.getOrdersByUserId(userId);
@@ -36,7 +38,7 @@ public class OrderController {
     }
 
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    @DeleteMapping("/delete/{orderId}/{userId}")
+    @DeleteMapping("/{orderId}/{userId}")
     public ResponseEntity<Void> deleteOrder(@PathVariable Long orderId, @PathVariable Long userId) {
         orderService.deleteOrder(orderId, userId);
         return ResponseEntity.noContent().build();

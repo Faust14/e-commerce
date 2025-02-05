@@ -18,21 +18,21 @@ public class ProductExceptionAdvice {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> invalidRequestBody(MethodArgumentNotValidException methodArgumentNotValidException) {
         log.warn("Invalid http request: {}", methodArgumentNotValidException.getMessage());
-        ErrorResponse apiError = new ErrorResponse(HttpStatus.BAD_REQUEST.name(), HttpStatus.BAD_REQUEST.value(),methodArgumentNotValidException.getMessage());
+        ErrorResponse apiError = new ErrorResponse(HttpStatus.BAD_REQUEST.name(), HttpStatus.BAD_REQUEST.value(), methodArgumentNotValidException.getMessage());
         return ResponseEntity.status(400).body(apiError);
     }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorResponse> notFound(NotFoundException notFoundException) {
         log.warn("Not found: {}", notFoundException.getMessage());
-        ErrorResponse apiError = new ErrorResponse(HttpStatus.BAD_REQUEST.name(), HttpStatus.BAD_REQUEST.value(),notFoundException.getMessage());
+        ErrorResponse apiError = new ErrorResponse(HttpStatus.BAD_REQUEST.name(), HttpStatus.BAD_REQUEST.value(), notFoundException.getMessage());
         return ResponseEntity.status(400).body(apiError);
     }
 
     @ExceptionHandler(Throwable.class)
-    public ResponseEntity<ErrorResponse> defaultException (Throwable throwable) {
+    public ResponseEntity<ErrorResponse> defaultException(Throwable throwable) {
         log.warn("Internal server error: {}", throwable.getMessage());
-        ErrorResponse apiError = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.name(), HttpStatus.INTERNAL_SERVER_ERROR.value(),throwable.getMessage());
+        ErrorResponse apiError = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.name(), HttpStatus.INTERNAL_SERVER_ERROR.value(), throwable.getMessage());
         return ResponseEntity.status(500).body(apiError);
     }
 }
